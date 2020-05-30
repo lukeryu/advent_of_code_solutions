@@ -13,19 +13,19 @@ fn puzzle_1(input: String) -> i32 {
     while index < values.len() {
         match values[index] {
             OP_ADD => {
-                let index_A = values[index + 1] as usize;
-                let index_B = values[index + 2] as usize;
+                let index_a = values[index + 1] as usize;
+                let index_b = values[index + 2] as usize;
                 let index_result = values[index + 3] as usize;
-                let value_a = values[index_A];
-                let value_b = values[index_B];
+                let value_a = values[index_a];
+                let value_b = values[index_b];
                 values[index_result] = value_a + value_b;
             }
             OP_MULTIPLY => {
-                let index_A = values[index + 1] as usize;
-                let index_B = values[index + 2] as usize;
+                let index_a = values[index + 1] as usize;
+                let index_b = values[index + 2] as usize;
                 let index_result = values[index + 3] as usize;
-                let value_a = values[index_A];
-                let value_b = values[index_B];
+                let value_a = values[index_a];
+                let value_b = values[index_b];
                 values[index_result] = value_a * value_b;
             }
             OP_END_PROGRAM => break,
@@ -37,7 +37,7 @@ fn puzzle_1(input: String) -> i32 {
     return values[0];
 }
 
-fn puzzle_2(input: String, desiredOutput: i32) -> i32 {
+fn puzzle_2(input: String, desired_output: i32) -> i32 {
     let mut values: Vec<i32> = input.split(",")
         .map(|s| -> i32{ s.parse::<i32>().unwrap() })
         .collect();
@@ -46,15 +46,15 @@ fn puzzle_2(input: String, desiredOutput: i32) -> i32 {
         for verb in 1..99 {
             values[1] = noun.clone();
             values[2] = verb.clone();
-            let stringVec: Vec<String> = values.iter()
+            let string_vec: Vec<String> = values.iter()
                 .map(|i| -> String { return i.to_string(); })
                 .collect();
 
-            let input1 = stringVec
+            let input1 = string_vec
                 .join(",");
 
             let output = puzzle_1(input1);
-            if output == desiredOutput {
+            if output == desired_output {
                 return &noun * 100 + &verb;
             }
         }
@@ -97,8 +97,8 @@ mod tests {
         });
 
         match utils::read_lines("data/Day5.txt") {
-            Ok(readFileLines) => {
-                let mut input_line: String = readFileLines.get(0).unwrap().clone();
+            Ok(read_file_lines) => {
+                let input_line: String = read_file_lines.get(0).unwrap().clone();
 
                 let mut parsed_values: Vec<&str> = input_line.split(",")
                     .collect();
