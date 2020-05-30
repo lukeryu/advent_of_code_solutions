@@ -1,4 +1,6 @@
-fn hasAjacentEqualCharacters(string: &String) -> bool {
+use std::collections::HashMap;
+
+fn has_ajacent_equal_characters(string: &String) -> bool {
     let digits: Vec<_> = string.chars().map(|n| n.to_digit(10).unwrap()).collect();
 
     // Check never decreases
@@ -13,35 +15,47 @@ fn hasAjacentEqualCharacters(string: &String) -> bool {
     false
 }
 
-fn recursive_build(value: u32, recursive: u32) -> impl Iterator<Item=u32> {
-//    return (value..10)
-//        .flat_map(|thisVal| {
-//            let ten: u32 = 10;
-//            let amount = thisVal * ten.pow(recursive);
-//            return recursive_build(thisVal, recursive - 1)
-//                .map(|isAThing| -> u32 { isAThing + amount });
-//        });
+fn has_ajacent_equal_characters_2(string: &String) -> bool {
+    let digits: Vec<_> = string.chars().map(|n| n.to_digit(10).unwrap()).collect();
+    // Check never decreases
+    for i in 1..digits.len() {
+        if &digits[i] < &digits[i-1] { return false; }
+    }
 
-    return (1..10);
+    // Check for existence of pair
+    let mut value_count = HashMap::new();
+    for i in digits.iter() {
+        let current_count = value_count.entry(i).or_insert(0);
+        *current_count += 1;
+    }
+
+    return value_count.values().into_iter()
+        .filter(|&&count| count == 2)
+        .count() > 0;
 }
 
 fn puzzle1(start: &u32, end: &u32) -> usize {
-    return recursive_build(0, 6)
+    //recursive_build(0, 6)
+    return (start.clone()..end.clone())
         .filter(|x| x > start)
         .filter(|x| x < end)
         .map(|number| -> String { number.to_string() })
-        .filter(hasAjacentEqualCharacters)
+        .filter(has_ajacent_equal_characters)
         .count();
 }
 
-fn puzzle2(input: Vec<String>) -> i32 {
-    for val in 1..10 {}
-    return 0;
+fn puzzle2(start: &u32, end: &u32) -> usize {
+    return (start.clone()..end.clone())
+        .filter(|x| x > start)
+        .filter(|x| x < end)
+        .map(|number| -> String { number.to_string() })
+        .filter(has_ajacent_equal_characters_2)
+        .count();
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::day4::{puzzle1, puzzle2};
+    use crate::day4::{puzzle1, puzzle2, has_ajacent_equal_characters_2};
     use crate::utils;
 
     struct Puzzle1Test {
@@ -56,7 +70,7 @@ mod tests {
         tests.push(Puzzle1Test {
             startPassword: 372304,
             endPassword: 847060,
-            expected_result: 0,
+            expected_result: 475,
         });
 
         for test in tests {
@@ -66,31 +80,30 @@ mod tests {
     }
 
     struct Puzzle2Test {
-        test_data: Vec<String>,
-        expected_result: i32,
+        startPassword: u32,
+        endPassword: u32,
+        expected_result: usize,
     }
 
     #[test]
     fn test_puzzle_2() {
         let mut tests: Vec<Puzzle2Test> = Vec::new();
         tests.push(Puzzle2Test {
-            test_data: vec![String::from("14")],
-            expected_result: 2,
+            startPassword: 372304,
+            endPassword: 847060,
+            expected_result: 0,
         });
-        match utils::read_lines("data/Day1.txt") {
-            Ok(lines) => {
-                tests.push(Puzzle2Test {
-                    test_data: lines,
-                    expected_result: 0,
-                });
-                for test in tests {
-                    let result = puzzle2(test.test_data);
-                    assert_eq!(result, test.expected_result);
-                }
-            }
-            Err(error) => {
-                println!("{}", error);
-            }
+        for test in tests {
+            let result = puzzle2(&test.startPassword, &test.endPassword);
+            assert_eq!(result, test.expected_result);
         }
+
+    }
+
+    #[test]
+    fn test_has_ajacent_equal_characters_2() {
+        assert_eq!(has_ajacent_equal_characters_2(&String::from("112233")), true);
+        assert_eq!(has_ajacent_equal_characters_2(&String::from("123444")), false);
+        assert_eq!(has_ajacent_equal_characters_2(&String::from("111122")), true);
     }
 }
