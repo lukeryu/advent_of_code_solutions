@@ -5,7 +5,9 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
+mod day12;
 mod utils;
+mod cartesian;
 
 #[cfg(test)]
 mod tests {

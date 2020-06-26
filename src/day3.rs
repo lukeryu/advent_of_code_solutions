@@ -4,6 +4,7 @@ use std::fmt::{Display, Error, Formatter};
 use std::io;
 use std::thread::current;
 use std::ops::Range;
+use crate::cartesian::*;
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone, Copy)]
 enum Direction {
@@ -20,56 +21,12 @@ enum Plane {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone, Copy)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-const ORIGIN: Point = Point { x: 0, y: 0 };
-
-impl Point {
-    fn distance(&self) -> i32 {
-        return self.x.abs() + self.y.abs();
-    }
-    fn up(&self, d: i32) -> Point {
-        return Point {
-            x: self.x,
-            y: self.y + d,
-        };
-    }
-    fn down(&self, d: i32) -> Point {
-        return Point {
-            x: self.x,
-            y: self.y - d,
-        };
-    }
-    fn left(&self, d: i32) -> Point {
-        return Point {
-            x: self.x - d,
-            y: self.y,
-        };
-    }
-    fn right(&self, d: i32) -> Point {
-        return Point {
-            x: self.x + d,
-            y: self.y,
-        };
-    }
-}
-
-impl Display for Point {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{},{}", self.x, self.y)
-    }
-}
-
-#[derive(Hash, Eq, PartialEq, Debug, Clone, Copy)]
 struct Segment {
     lhs: Point,
     rhs: Point,
     plane: Plane,
     start_number_of_steps: u32,
-    direction: Direction
+    direction: Direction,
 }
 
 fn calculate_signal_delay(lhssegment: &Segment, rhssegment: &Segment, point: &Point) -> u32 {
@@ -85,15 +42,9 @@ impl Segment {
             segment.get_range().contains(&self.get_line()) {
             let intersection_point;
             if self.plane == Plane::HORIZONTAL {
-                intersection_point = Point {
-                    x: segment.get_line(),
-                    y: self.get_line(),
-                }
+                intersection_point = Point::new2D(segment.get_line(), self.get_line());
             } else {
-                intersection_point = Point {
-                    x: self.get_line(),
-                    y: segment.get_line(),
-                }
+                intersection_point = Point::new2D(self.get_line(), segment.get_line());
             }
             if (!intersection_point.eq(&ORIGIN)) {
                 return vec![intersection_point];
@@ -166,7 +117,7 @@ impl Segment {
                     rhs: right_point,
                     plane: Plane::VERTICAL,
                     start_number_of_steps: start_number_of_steps,
-                    direction: Direction::LEFT
+                    direction: Direction::LEFT,
                 };
             } else {
                 return Segment {
@@ -174,7 +125,7 @@ impl Segment {
                     rhs: left_point,
                     plane: Plane::VERTICAL,
                     start_number_of_steps: start_number_of_steps,
-                    direction: Direction::RIGHT
+                    direction: Direction::RIGHT,
                 };
             }
         } else {
@@ -184,7 +135,7 @@ impl Segment {
                     rhs: right_point,
                     plane: Plane::HORIZONTAL,
                     start_number_of_steps: start_number_of_steps,
-                    direction: Direction::LEFT
+                    direction: Direction::LEFT,
                 };
             } else {
                 return Segment {
@@ -192,7 +143,7 @@ impl Segment {
                     rhs: left_point,
                     plane: Plane::HORIZONTAL,
                     start_number_of_steps: start_number_of_steps,
-                    direction: Direction::RIGHT
+                    direction: Direction::RIGHT,
                 };
             }
         }
@@ -237,11 +188,11 @@ fn get_segments(directions_vector: &Vec<String>) -> Vec<Segment> {
         let dir = get_direction(&direction_string);
         let steps = get_steps(&direction_string);
         let next_point = match &dir {
-            Direction::UP => current_point.up(steps),
-            Direction::DOWN => current_point.down(steps),
-            Direction::LEFT => current_point.left(steps),
-            Direction::RIGHT => current_point.right(steps),
-            _ => current_point.up(steps),
+            Direction::UP => current_point.shift_up(steps),
+            Direction::DOWN => current_point.shift_down(steps),
+            Direction::LEFT => current_point.shift_left(steps),
+            Direction::RIGHT => current_point.shift_right(steps),
+            _ => current_point.shift_up(steps),
         };
 
         let segment = Segment::new(current_point.clone(), next_point.clone(), start_number_of_steps);
@@ -279,7 +230,7 @@ fn puzzle_1(input: Vec<String>) -> i32 {
                 match closest_point {
                     None => closest_point = Option::Some(point.clone()),
                     Some(intersection_point) => {
-                        if point.distance() < intersection_point.distance() {
+                        if point.distance_from_origin() < intersection_point.distance_from_origin() {
                             closest_point = Option::Some(point.clone())
                         }
                     }
@@ -287,7 +238,7 @@ fn puzzle_1(input: Vec<String>) -> i32 {
             }
         }
     }
-    return closest_point.map_or(0, |point| point.distance());
+    return closest_point.map_or(0, |point| point.distance_from_origin());
 }
 
 fn puzzle_2(input: Vec<String>) -> u32 {
