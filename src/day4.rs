@@ -91,7 +91,7 @@ mod tests {
         tests.push(Puzzle2Test {
             startPassword: 372304,
             endPassword: 847060,
-            expected_result: 0,
+            expected_result: 297,
         });
         for test in tests {
             let result = puzzle2(&test.startPassword, &test.endPassword);

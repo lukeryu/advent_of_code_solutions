@@ -106,10 +106,10 @@ impl Segment {
     fn signal_delay_at(&self, point: &Point) -> u32 {
         if self.plane == Plane::HORIZONTAL {
             let diff = i32::abs(self.start_point().x - point.x) as u32;
-            return self.start_number_of_steps + diff + 1;
+            return self.start_number_of_steps + diff;
         } else {
-            let diff = i32::abs(self.start_point().x - point.x) as u32;
-            return self.start_number_of_steps + diff + 1;
+            let diff = i32::abs(self.start_point().y - point.y) as u32;
+            return self.start_number_of_steps + diff;
         }
         return 0;
     }
@@ -385,7 +385,7 @@ mod tests {
             Ok(lines) => {
                 tests.push(Puzzle2Test {
                     test_data: lines,
-                    expected_result: 0,
+                    expected_result: 35038,
                 });
                 for test in tests {
                     let result = puzzle_2(test.test_data);
