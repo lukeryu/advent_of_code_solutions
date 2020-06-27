@@ -42,9 +42,9 @@ impl Segment {
             segment.get_range().contains(&self.get_line()) {
             let intersection_point;
             if self.plane == Plane::HORIZONTAL {
-                intersection_point = Point::new2D(segment.get_line(), self.get_line());
+                intersection_point = Point::new_2d(segment.get_line(), self.get_line());
             } else {
-                intersection_point = Point::new2D(self.get_line(), segment.get_line());
+                intersection_point = Point::new_2d(self.get_line(), segment.get_line());
             }
             if (!intersection_point.eq(&ORIGIN)) {
                 return vec![intersection_point];

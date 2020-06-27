@@ -59,8 +59,8 @@ mod tests {
     use crate::utils;
 
     struct Puzzle1Test {
-        startPassword: u32,
-        endPassword: u32,
+        start_password: u32,
+        end_password: u32,
         expected_result: usize,
     }
 
@@ -68,20 +68,20 @@ mod tests {
     fn test_puzzle_1() {
         let mut tests: Vec<Puzzle1Test> = Vec::new();
         tests.push(Puzzle1Test {
-            startPassword: 372304,
-            endPassword: 847060,
+            start_password: 372304,
+            end_password: 847060,
             expected_result: 475,
         });
 
         for test in tests {
-            let result = puzzle1(&test.startPassword, &test.endPassword);
+            let result = puzzle1(&test.start_password, &test.end_password);
             assert_eq!(result, test.expected_result);
         }
     }
 
     struct Puzzle2Test {
-        startPassword: u32,
-        endPassword: u32,
+        start_password: u32,
+        end_password: u32,
         expected_result: usize,
     }
 
@@ -89,12 +89,12 @@ mod tests {
     fn test_puzzle_2() {
         let mut tests: Vec<Puzzle2Test> = Vec::new();
         tests.push(Puzzle2Test {
-            startPassword: 372304,
-            endPassword: 847060,
+            start_password: 372304,
+            end_password: 847060,
             expected_result: 297,
         });
         for test in tests {
-            let result = puzzle2(&test.startPassword, &test.endPassword);
+            let result = puzzle2(&test.start_password, &test.end_password);
             assert_eq!(result, test.expected_result);
         }
 

@@ -3,7 +3,7 @@ use std::char::from_u32;
 fn puzzle1(input: String, width: u32, height: u32) -> u32 {
     let layer_size = (width * height) as usize;
     let values: Vec<u32> = input.chars()
-        .map(toU32)
+        .map(to_u32)
         .collect();
 
     let mut layers = Vec::<Vec<u32>>::with_capacity(values.len() / layer_size);
@@ -51,7 +51,7 @@ fn puzzle1(input: String, width: u32, height: u32) -> u32 {
     return (layer_one_count * layer_two_count) as u32;
 }
 
-fn toU32(c: char) -> u32 {
+fn to_u32(c: char) -> u32 {
     return c.to_digit(10).unwrap();
 }
 
@@ -62,7 +62,7 @@ fn to_usize(c: char) -> usize {
 fn puzzle2(input: String, width: usize, height: usize) -> String {
     let layer_size = width * height;
     let values: Vec<u32> = input.chars()
-        .map(toU32)
+        .map(to_u32)
         .collect();
 
     let mut layers = Vec::<Vec<u32>>::with_capacity(values.len() / layer_size);

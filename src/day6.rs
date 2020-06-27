@@ -21,12 +21,12 @@ struct CelestialBody {
 }
 
 impl CelestialBody {
-    fn addChild(&mut self, childBody: String) {
-        self.children.push(childBody);
+    fn add_child(&mut self, child_body: String) {
+        self.children.push(child_body);
     }
 
-    fn addParent(&mut self, parentBody: String) {
-        self.parents.push(parentBody);
+    fn add_parent(&mut self, parent_body: String) {
+        self.parents.push(parent_body);
     }
 
     fn new(name: String) -> CelestialBody {
@@ -86,8 +86,8 @@ impl CelestialBody {
 
 fn make_orbit_graph(input: Vec<String>) -> HashMap<String, CelestialBody> {
     let orbits: Vec<Orbit> = input.iter()
-        .map(|inputString| -> Orbit {
-            let split: Vec<&str> = inputString.split(")")
+        .map(|input_string| -> Orbit {
+            let split: Vec<&str> = input_string.split(")")
                 .collect();
             let orbited = String::from(split[0]);
             let orbiting = String::from(split[1]);
@@ -102,13 +102,13 @@ fn make_orbit_graph(input: Vec<String>) -> HashMap<String, CelestialBody> {
     for orbit in orbits.iter() {
         let mut orbited_body = celestial_body_map.entry(orbit.orbited.clone())
             .or_insert(CelestialBody::new(orbit.orbited.clone()));
-        orbited_body.addChild(orbit.orbiting.clone());
+        orbited_body.add_child(orbit.orbiting.clone());
     }
 
     for orbit in orbits.iter() {
         let mut orbiting_body = celestial_body_map.entry(orbit.orbiting.clone())
             .or_insert(CelestialBody::new(orbit.orbiting.clone()));
-        orbiting_body.addParent(orbit.orbited.clone());
+        orbiting_body.add_parent(orbit.orbited.clone());
     }
 
     return celestial_body_map;

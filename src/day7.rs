@@ -71,8 +71,8 @@ struct ParameterOpCode {
     op_code: OpCode,
 }
 
-fn to_parameter_mode(charInput: char) -> ParameterMode {
-    if (charInput == '1') {
+fn to_parameter_mode(char_input: char) -> ParameterMode {
+    if (char_input == '1') {
         return ParameterMode::IMMEDIATE;
     }
     return ParameterMode::POSITION;

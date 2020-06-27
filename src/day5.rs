@@ -36,14 +36,14 @@ struct ParameterOpCode {
     op_code: OpCode,
 }
 
-fn toParameterMode(charInput: char) -> ParameterMode {
-    if (charInput == '1') {
+fn to_parameter_mode(char_input: char) -> ParameterMode {
+    if (char_input == '1') {
         return ParameterMode::IMMEDIATE;
     }
     return ParameterMode::POSITION;
 }
 
-fn toOpCode(char1: char, char2: char) -> OpCode {
+fn to_op_code(char1: char, char2: char) -> OpCode {
     if (char1 == '0') {
         if (char2 == '1') {
             return OpCode::ADD;
@@ -69,23 +69,23 @@ fn toOpCode(char1: char, char2: char) -> OpCode {
     return OpCode::UNKNOWN;
 }
 
-fn parseParameterOpCode(code: &i32) -> ParameterOpCode {
-    let mut formattedString = format!("{:05}", code);
-    let mut chars = formattedString.chars();
+fn parse_parameter_op_code(code: &i32) -> ParameterOpCode {
+    let mut formatted_string = format!("{:05}", code);
+    let mut chars = formatted_string.chars();
     let char1 = chars.next().unwrap();
     let char2 = chars.next().unwrap();
     let char3 = chars.next().unwrap();
     let char4 = chars.next().unwrap();
     let char5 = chars.next().unwrap();
     return ParameterOpCode {
-        parameter_1_mode: toParameterMode(char3),
-        parameter_2_mode: toParameterMode(char2),
-        parameter_3_mode: toParameterMode(char1),
-        op_code: toOpCode(char4, char5),
+        parameter_1_mode: to_parameter_mode(char3),
+        parameter_2_mode: to_parameter_mode(char2),
+        parameter_3_mode: to_parameter_mode(char1),
+        op_code: to_op_code(char4, char5),
     };
 }
 
-fn getValueAtIndex(index: usize, mode: ParameterMode, values: &Vec<i32>) -> i32 {
+fn get_value_at_index(index: usize, mode: ParameterMode, values: &Vec<i32>) -> i32 {
     return match mode {
         ParameterMode::POSITION => {
             let index_a = values[index] as usize;
@@ -97,7 +97,7 @@ fn getValueAtIndex(index: usize, mode: ParameterMode, values: &Vec<i32>) -> i32 
     };
 }
 
-fn setValueAtIndex(value: i32, index: usize, mode: ParameterMode, values: &mut Vec<i32>) {
+fn set_value_at_index(value: i32, index: usize, mode: ParameterMode, values: &mut Vec<i32>) {
     return match mode {
         ParameterMode::POSITION => {
             let index_a = values[index] as usize;
@@ -119,29 +119,29 @@ fn puzzle_1(input: String, first_input: i32) -> i32 {
 
     let mut index = 0;
     while index < values.len() {
-        let opCode = parseParameterOpCode(&values[index]);
-        println!("{:?}", &opCode);
-        match opCode.op_code {
+        let op_code = parse_parameter_op_code(&values[index]);
+        println!("{:?}", &op_code);
+        match op_code.op_code {
             OpCode::ADD => {
                 println!("{:?}", &values[index..index + 4]);
 
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
-                let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
-                setValueAtIndex(value_a + value_b, index + 3, opCode.parameter_3_mode.clone(), &mut values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
+                let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
+                set_value_at_index(value_a + value_b, index + 3, op_code.parameter_3_mode.clone(), &mut values);
                 index += 4;
             }
             OpCode::MULTIPLY => {
                 println!("{:?}", &values[index..index + 4]);
 
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
-                let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
-                setValueAtIndex(value_a * value_b, index + 3, opCode.parameter_3_mode.clone(), &mut values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
+                let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
+                set_value_at_index(value_a * value_b, index + 3, op_code.parameter_3_mode.clone(), &mut values);
                 index += 4;
             }
             OpCode::SAVE_INPUT_AT => {
                 println!("{:?}", &values[index..index + 2]);
                 match input.pop() {
-                    Some(value) => setValueAtIndex(value, index + 1, opCode.parameter_1_mode.clone(), &mut values),
+                    Some(value) => set_value_at_index(value, index + 1, op_code.parameter_1_mode.clone(), &mut values),
                     None => { println!("Cannot Read from input") }
                 }
 
@@ -149,15 +149,15 @@ fn puzzle_1(input: String, first_input: i32) -> i32 {
             }
             OpCode::OUTPUT_VALUE_AT => {
                 println!("{:?}", &values[index..index + 2]);
-                let register = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
+                let register = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
                 output.push(register);
                 index += 2;
             }
             OpCode::JUMP_IF_TRUE => {
                 println!("{:?}", &values[index..index + 3]);
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
                 if (value_a != 0) {
-                    let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
+                    let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
                     index = value_b as usize;
                 } else {
                     index += 3;
@@ -165,9 +165,9 @@ fn puzzle_1(input: String, first_input: i32) -> i32 {
             }
             OpCode::JUMP_IF_FALSE => {
                 println!("{:?}", &values[index..index + 3]);
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
                 if (value_a == 0) {
-                    let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
+                    let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
                     index = value_b as usize;
                 } else {
                     index += 3;
@@ -175,28 +175,28 @@ fn puzzle_1(input: String, first_input: i32) -> i32 {
             }
             OpCode::LESS_THAN => {
                 println!("{:?}", &values[index..index + 4]);
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
-                let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
+                let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
                 let save_value: i32;
                 if (value_a < value_b) {
                     save_value = 1;
                 } else {
                     save_value = 0;
                 }
-                setValueAtIndex(save_value, index + 3, opCode.parameter_3_mode.clone(), &mut values);
+                set_value_at_index(save_value, index + 3, op_code.parameter_3_mode.clone(), &mut values);
                 index += 4;
             }
             OpCode::EQUALS => {
                 println!("{:?}", &values[index..index + 4]);
-                let value_a = getValueAtIndex(index + 1, opCode.parameter_1_mode.clone(), &values);
-                let value_b = getValueAtIndex(index + 2, opCode.parameter_2_mode.clone(), &values);
+                let value_a = get_value_at_index(index + 1, op_code.parameter_1_mode.clone(), &values);
+                let value_b = get_value_at_index(index + 2, op_code.parameter_2_mode.clone(), &values);
                 let save_value: i32;
                 if (value_a == value_b) {
                     save_value = 1;
                 } else {
                     save_value = 0;
                 }
-                setValueAtIndex(save_value, index + 3, opCode.parameter_3_mode.clone(), &mut values);
+                set_value_at_index(save_value, index + 3, op_code.parameter_3_mode.clone(), &mut values);
                 index += 4;
             }
             OpCode::END_PROGRAM => break,

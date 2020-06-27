@@ -20,7 +20,7 @@ impl Point {
         };
     }
 
-    pub fn new2D(x: i32, y: i32) -> Point {
+    pub fn new_2d(x: i32, y: i32) -> Point {
         return Point::new(x, y, 0);
     }
 
