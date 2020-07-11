@@ -5,6 +5,16 @@ use std::fmt::{Display, Error, Formatter};
 use self::regex::Regex;
 
 #[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub enum Dimension {
+    X,
+    Y,
+    Z,
+}
+
+///
+///Represents a point in 3 dimensional space
+///
+#[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct Point {
     pub x: i32,
     pub y: i32,
@@ -12,31 +22,34 @@ pub struct Point {
 }
 
 impl Point {
-    pub const fn new(x: i32, y: i32, z: i32) -> Point {
-        return Point {
+    ///
+    /// Creates a new point
+    ///
+    pub const fn new(x: i32, y: i32, z: i32) -> Self {
+        return Self {
             x,
             y,
             z,
         };
     }
 
-    pub fn new_2d(x: i32, y: i32) -> Point {
-        return Point::new(x, y, 0);
+    pub fn new_2d(x: i32, y: i32) -> Self {
+        return Self::new(x, y, 0);
     }
 
-    pub fn from_string(string: &String) -> Point {
-        return Point::from_str(string.as_str());
+    pub fn from_string(string: &String) -> Self {
+        return Self::from_str(string.as_str());
     }
 
-    pub fn from_str(string: &str) -> Point {
+    pub fn from_str(string: &str) -> Self {
         let point_format: Regex = Regex::new(r"<x=(?P<xdim>-?\d+), y=(?P<ydim>-?\d+), z=(?P<zdim>-?\d+)>").unwrap();
 
-        return point_format.captures(string).map(|captures| -> Point {
+        return point_format.captures(string).map(|captures| -> Self {
             let x = captures.name("xdim").unwrap().as_str().parse::<i32>().unwrap();
             let y = captures.name("ydim").unwrap().as_str().parse::<i32>().unwrap();
             let z = captures.name("zdim").unwrap().as_str().parse::<i32>().unwrap();
 
-            return Point {
+            return Self {
                 x,
                 y,
                 z,
@@ -44,8 +57,8 @@ impl Point {
         }).unwrap();
     }
 
-    pub fn move_velocity(self, velocity: &Velocity) -> Point {
-        return Point {
+    pub fn move_velocity(self, velocity: &Velocity) -> Self {
+        return Self {
             x: self.x + velocity.x,
             y: self.y + velocity.y,
             z: self.z + velocity.z,
@@ -55,29 +68,29 @@ impl Point {
     pub fn distance_from_origin(&self) -> i32 {
         return self.x.abs() + self.y.abs() + self.z.abs();
     }
-    pub fn shift_up(&self, d: i32) -> Point {
-        return Point {
+    pub fn shift_up(&self, d: i32) -> Self {
+        return Self {
             x: self.x,
             y: self.y + d,
             z: self.z,
         };
     }
-    pub fn shift_down(&self, d: i32) -> Point {
-        return Point {
+    pub fn shift_down(&self, d: i32) -> Self {
+        return Self {
             x: self.x,
             y: self.y - d,
             z: self.z,
         };
     }
-    pub fn shift_left(&self, d: i32) -> Point {
-        return Point {
+    pub fn shift_left(&self, d: i32) -> Self {
+        return Self {
             x: self.x - d,
             y: self.y,
             z: self.z,
         };
     }
-    pub fn shift_right(&self, d: i32) -> Point {
-        return Point {
+    pub fn shift_right(&self, d: i32) -> Self {
+        return Self {
             x: self.x + d,
             y: self.y,
             z: self.z,
@@ -95,7 +108,10 @@ impl Display for Point {
 pub const ORIGIN: Point = Point::new(0, 0, 0);
 pub const ZERO_VELOCITY: Velocity = Velocity::new(0, 0, 0);
 
-#[derive(Hash, Eq, PartialEq,Debug, Copy, Clone)]
+///
+///Represents a velocity in 3 dimensional space
+///
+#[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct Velocity {
     pub x: i32,
     pub y: i32,
@@ -103,16 +119,16 @@ pub struct Velocity {
 }
 
 impl Velocity {
-    pub const fn new(x: i32, y: i32, z: i32) -> Velocity {
-        return Velocity {
+    pub const fn new(x: i32, y: i32, z: i32) -> Self {
+        return Self {
             x,
             y,
             z,
         };
     }
 
-    pub fn add(self, other_velocity: Velocity) -> Velocity {
-        return Velocity::new(self.x + other_velocity.x, self.y + other_velocity.y, self.z + other_velocity.z);
+    pub fn add(self, other_velocity: Self) -> Self {
+        return Self::new(self.x + other_velocity.x, self.y + other_velocity.y, self.z + other_velocity.z);
     }
 
     pub fn distance_from_origin(&self) -> i32 {

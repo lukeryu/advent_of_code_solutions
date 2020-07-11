@@ -9,6 +9,7 @@ mod day8;
 mod day12;
 mod utils;
 mod cartesian;
+mod math;
 
 #[cfg(test)]
 mod tests {
