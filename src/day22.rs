@@ -50,7 +50,7 @@ impl Shuffle {
 
         return None;
     }
-    fn do_shuffle(self, card_deck: Vec<u32>) -> Vec<u32> {
+    fn do_shuffle(self, card_deck: Vec<u64>) -> Vec<u64> {
         return match self.shuffle_type {
             ShuffleType::DEAL_INTO => {
                 let mut new_vec = Vec::from(card_deck);
@@ -100,7 +100,7 @@ impl Shuffle {
     }
 }
 
-fn puzzle1(shuffle_instructions: Vec<String>, number_of_cards: u32) -> Vec<u32> {
+fn puzzle1(shuffle_instructions: Vec<String>, number_of_cards: u64) -> Vec<u64> {
     let shuffles: Vec<Shuffle> = shuffle_instructions.into_iter()
         .map(Shuffle::new)
         .map(Option::unwrap)
@@ -114,18 +114,115 @@ fn puzzle1(shuffle_instructions: Vec<String>, number_of_cards: u32) -> Vec<u32> 
     return card_deck;
 }
 
-fn initialize_card_deck(number_of_cards: u32) -> Vec<u32> {
+fn puzzle2(shuffle_instructions: Vec<String>) -> i128 {
+    let shuffles: Vec<Shuffle> = shuffle_instructions.into_iter()
+        .map(Shuffle::new)
+        .map(Option::unwrap)
+        .collect();
+
+    let rep_count = 101741582076661u128;
+    let deck_size = 119315717514047;
+    let position = 2020;
+
+    let (mul, add) = get_mul_add_to_reverse_shuffle(&shuffles[..], deck_size);
+
+    let mx = modular_pow(mul as u128, rep_count as u128, deck_size as u128) as i128;
+    let pmx = (position * mx) % deck_size;
+    let amx = (add * mx) % deck_size;
+    let inv = multiplicative_inverse(mul - 1, deck_size as i128);
+    let res = (pmx + (amx - add) * inv) % deck_size;
+    if res < 0 {
+        res + deck_size
+    } else {
+        res
+    }
+}
+
+fn multiplicative_inverse(a: i128, n: i128) -> i128 {
+    let mut t = 0i128;
+    let mut newt = 1i128;
+    let mut r = n;
+    let mut newr = a;
+
+    while newr != 0 {
+        let quotient = r / newr;
+        t -= quotient * newt;
+        r -= quotient * newr;
+        std::mem::swap(&mut t, &mut newt);
+        std::mem::swap(&mut r, &mut newr);
+    }
+
+    if r > 1 {
+        panic!("invalid n");
+    }
+    if t < 0 {
+        t += n;
+    }
+
+    t
+}
+
+fn modular_pow(mut base: u128, mut exp: u128, modulus: u128) -> u128 {
+    assert!(modulus > 0 && (modulus - 1) < std::u64::MAX as u128);
+    if modulus == 1 {
+        return 0;
+    }
+
+    let mut res = 1;
+    base %= modulus;
+    while exp > 0 {
+        if (exp % 2) == 1 {
+            res = (res * base) % modulus;
+        }
+        exp >>= 1;
+        base = (base * base) % modulus;
+    }
+
+    res
+}
+
+fn get_mul_add_to_reverse_shuffle(steps: &[Shuffle], deck_size: i128) -> (i128, i128) {
+    let mut mul = 1i128;
+    let mut add = 0i128;
+    for &step in steps.iter().rev() {
+        match step.shuffle_type {
+            ShuffleType::DEAL_INTO => {
+                add += 1;
+                let x = deck_size - 1;
+                mul = (mul * x) % deck_size;
+                add = (add * x) % deck_size;
+            }
+            ShuffleType::CUT => {
+                add =
+                    (add + if step.index < 0 {
+                        deck_size + step.index as i128
+                    } else {
+                        step.index as i128
+                    }) % deck_size;
+            }
+            ShuffleType::DEAL_WITH => {
+                let x = multiplicative_inverse(step.index as i128, deck_size as i128);
+                mul = (mul * x) % deck_size;
+                add = (add * x) % deck_size;
+            }
+        }
+    }
+
+    (mul, add)
+}
+
+fn initialize_card_deck(number_of_cards: u64) -> Vec<u64> {
     return (0..number_of_cards).collect();
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::day22::puzzle1;
+    use crate::day22::{puzzle1, puzzle2};
     use crate::utils::read_lines;
 
     struct Test1 {
         instructions: Vec<String>,
-        expected: Vec<u32>,
+        expected: Vec<u64>,
     }
 
     #[test]
@@ -178,5 +275,14 @@ mod tests {
 
         let index = result.iter().position(|value| *value == 2019).unwrap();
         assert_eq!(2322, index)
+    }
+
+    #[test]
+    fn test_puzzle2() {
+        let lines = read_lines("data/Day22.txt").unwrap();
+
+        let result = puzzle2(lines);
+
+        assert_eq!(result, 49283089762689);
     }
 }
