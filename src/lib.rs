@@ -7,6 +7,7 @@ mod day6;
 mod day7;
 mod day8;
 mod day12;
+mod day24;
 mod utils;
 mod cartesian;
 mod math;
