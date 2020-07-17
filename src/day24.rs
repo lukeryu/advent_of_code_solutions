@@ -131,8 +131,6 @@ impl Grid {
                 None => 0
             }
         }
-
-        return 0;
     }
     fn left_count(self, index: usize, data_map: &HashMap<i32, Grid>) -> u8 {
         if index == 13 {
@@ -161,8 +159,6 @@ impl Grid {
                 None => 0
             }
         }
-
-        return 0;
     }
     fn right_count(self, index: usize, data_map: &HashMap<i32, Grid>) -> u8 {
         if index == 11 {
@@ -191,8 +187,6 @@ impl Grid {
                 None => 0
             }
         }
-
-        return 0;
     }
     fn down_count(self, index: usize, data_map: &HashMap<i32, Grid>) -> u8 {
         if index == 7 {
@@ -221,8 +215,6 @@ impl Grid {
                 None => 0
             }
         }
-
-        return 0;
     }
 
 
