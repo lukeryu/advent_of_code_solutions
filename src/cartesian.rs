@@ -3,6 +3,7 @@ extern crate regex;
 use std::fmt::{Display, Error, Formatter};
 
 use self::regex::Regex;
+use std::str::FromStr;
 
 #[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub enum Dimension {
@@ -37,24 +38,8 @@ impl Point {
         return Self::new(x, y, 0);
     }
 
-    pub fn from_string(string: &String) -> Self {
+    pub fn from_string(string: &String) -> Result<Self, ()> {
         return Self::from_str(string.as_str());
-    }
-
-    pub fn from_str(string: &str) -> Self {
-        let point_format: Regex = Regex::new(r"<x=(?P<xdim>-?\d+), y=(?P<ydim>-?\d+), z=(?P<zdim>-?\d+)>").unwrap();
-
-        return point_format.captures(string).map(|captures| -> Self {
-            let x = captures.name("xdim").unwrap().as_str().parse::<i32>().unwrap();
-            let y = captures.name("ydim").unwrap().as_str().parse::<i32>().unwrap();
-            let z = captures.name("zdim").unwrap().as_str().parse::<i32>().unwrap();
-
-            return Self {
-                x,
-                y,
-                z,
-            };
-        }).unwrap();
     }
 
     pub fn move_velocity(self, velocity: &Velocity) -> Self {
@@ -95,6 +80,26 @@ impl Point {
             y: self.y,
             z: self.z,
         };
+    }
+}
+
+impl FromStr for Point {
+    type Err = ();
+
+    fn from_str(string: &str) -> Result<Self, Self::Err> {
+        let point_format: Regex = Regex::new(r"<x=(?P<xdim>-?\d+), y=(?P<ydim>-?\d+), z=(?P<zdim>-?\d+)>").unwrap();
+
+        return Ok(point_format.captures(string).map(|captures| -> Self {
+            let x = captures.name("xdim").unwrap().as_str().parse::<i32>().unwrap();
+            let y = captures.name("ydim").unwrap().as_str().parse::<i32>().unwrap();
+            let z = captures.name("zdim").unwrap().as_str().parse::<i32>().unwrap();
+
+            return Self {
+                x,
+                y,
+                z,
+            };
+        }).unwrap());
     }
 }
 
@@ -142,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_from_str() {
-        let point = Point::from_str("<x=-6, y=-8, z=-4>");
+        let point = Point::from_str("<x=-6, y=-8, z=-4>").unwrap();
         assert_eq!(point.x, -6);
         assert_eq!(point.y, -8);
         assert_eq!(point.z, -4);

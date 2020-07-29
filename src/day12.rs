@@ -83,7 +83,7 @@ fn parse_moons(strings: Vec<String>) -> Vec<Moon> {
         .map(&Point::from_string)
         .map(|point| -> Moon {
             return Moon {
-                location: point,
+                location: point.unwrap(),
                 velocity: ZERO_VELOCITY,
             };
         }).collect();
