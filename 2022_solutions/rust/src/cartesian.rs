@@ -10,7 +10,7 @@ pub struct Point<T: Ord + Sub<Output=T> + Add<Output=T>> {
     pub y: T,
 }
 
-impl<T: Ord + Sub<Output=T> + Add<Output=T>> Point<T> {
+impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         Self {
             x,
@@ -33,6 +33,34 @@ impl<T: Ord + Sub<Output=T> + Add<Output=T>> Point<T> {
         }
 
         return x_dis + y_dis;
+    }
+
+    pub fn up(&self, value: T) -> Self {
+        Self {
+            x: self.x,
+            y: self.y + value,
+        }
+    }
+
+    pub fn down(&self, value: T) -> Self {
+        Self {
+            x: self.x,
+            y: self.y - value,
+        }
+    }
+
+    pub fn left(&self, value: T) -> Self {
+        Self {
+            x: self.x - value,
+            y: self.y,
+        }
+    }
+
+    pub fn right(&self, value: T) -> Self {
+        Self {
+            x: self.x + value,
+            y: self.y,
+        }
     }
 }
 
@@ -133,6 +161,13 @@ impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> Point3<T> {
             z: self.z - value,
         }
     }
+}
+
+pub enum Direction {
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST
 }
 
 impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> PartialOrd for Point3<T> {

@@ -93,12 +93,14 @@ mod tests {
         "Sensor at x=20, y=1: closest beacon is at x=15, y=3"];
 
     #[test]
+    #[ignore]
     fn test_puzzle1() {
         let return_value = puzzle1(&TEST_DATA, 10);
         assert_eq!(return_value, 13);
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle1_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day13.txt");
@@ -111,12 +113,14 @@ mod tests {
 
 
     #[test]
+    #[ignore]
     fn test_puzzle2() {
         let return_value = puzzle2(&TEST_DATA);
         assert_eq!(return_value, 2713310158);
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle2_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day13.txt");

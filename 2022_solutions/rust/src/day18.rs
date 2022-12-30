@@ -104,7 +104,7 @@ mod tests {
 
     #[test]
     fn test_puzzle0() {
-        const data: [&str; 2] = [
+        let data: [&str; 2] = [
             "1,1,1",
             "2,1,1"];
 
@@ -113,12 +113,14 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle1() {
         let return_value = puzzle1(&TEST_DATA);
         assert_eq!(return_value, 4370);
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle1_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day18.txt");
@@ -131,12 +133,14 @@ mod tests {
 
 
     #[test]
+    #[ignore]
     fn test_puzzle2() {
         let return_value = puzzle2(&TEST_DATA);
         assert_eq!(return_value, 2713310158);
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle2_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day18.txt");

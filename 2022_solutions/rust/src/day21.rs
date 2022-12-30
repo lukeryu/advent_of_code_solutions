@@ -183,6 +183,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_puzzle2_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day21.txt");
