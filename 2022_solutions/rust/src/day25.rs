@@ -1,5 +1,4 @@
 fn from_snafu(input_string: &str) -> u128 {
-    RadixNum:
     return 0;
 }
 

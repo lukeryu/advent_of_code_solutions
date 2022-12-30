@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
-use std::fmt::{Debug, Display, Formatter};
+use std::collections::{HashMap};
 use std::hash::Hash;
 use std::ops::{Add, Sub};
 
@@ -10,7 +9,7 @@ pub struct Point<T: Ord + Sub<Output=T> + Add<Output=T>> {
     pub y: T,
 }
 
-impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> Point<T> {
+impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy + Hash> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         Self {
             x,
