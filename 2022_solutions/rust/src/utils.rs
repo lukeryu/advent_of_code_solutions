@@ -21,7 +21,7 @@ pub struct Range<T: Ord> {
     rhs: T,
 }
 
-impl <T: Ord> Range<T> {
+impl<T: Ord> Range<T> {
     pub fn new(lhs: T, rhs: T) -> Self {
         if lhs <= rhs {
             return Self { lhs, rhs };
@@ -41,9 +41,17 @@ impl <T: Ord> Range<T> {
     }
 }
 
+pub fn divide_round_up(divisor: usize, dividend: usize) -> usize {
+    if divisor % dividend == 0 {
+        divisor / dividend
+    } else {
+        (divisor / dividend) + 1
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::utils::Range;
+    use crate::utils::{divide_round_up, Range};
 
     #[test]
     fn test_range_encompasses() {
@@ -83,6 +91,18 @@ mod tests {
         assert!(range4.overlaps(&range2));
         assert!(!range4.overlaps(&range3));
         assert!(range4.overlaps(&range4));
+    }
+
+    #[test]
+    fn test_divide_round_up_no_rounding() {
+        let result = divide_round_up(10, 5);
+        assert_eq!(result, 2);
+    }
+
+    #[test]
+    fn test_divide_round_up_rounding() {
+        let result = divide_round_up(10, 3);
+        assert_eq!(result, 4);
     }
 
 }
