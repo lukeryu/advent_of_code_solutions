@@ -73,7 +73,7 @@ impl<T: Ord + Sub<Output=T> + Add<Output=T>> PartialOrd for Point<T> {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Ord)]
 pub struct Point3<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> {
     pub x: T,
     pub y: T,
@@ -159,6 +159,18 @@ impl<T: Ord + Sub<Output=T> + Add<Output=T> + Copy> Point3<T> {
             y: self.y,
             z: self.z - value,
         }
+    }
+
+    pub fn get_x(&self) -> T {
+        return self.x;
+    }
+
+    pub fn get_y(&self) -> T {
+        return self.y;
+    }
+
+    pub fn get_z(&self) -> T {
+        return self.z;
     }
 }
 

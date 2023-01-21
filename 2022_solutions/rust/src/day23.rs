@@ -138,7 +138,7 @@ fn iterate_elves(elves: &mut HashMap<Point<i64>, usize>, initial_direction: &Dir
 
             let elf_name = proposed_elves.get(0).unwrap();
 
-            elves.retain(|key, val| *val != *elf_name);
+            elves.retain(|_key, val| *val != *elf_name);
             elves.insert(point, *elf_name);
         }
     }

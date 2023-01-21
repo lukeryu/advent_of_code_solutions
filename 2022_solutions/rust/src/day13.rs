@@ -1,3 +1,6 @@
+use std::cmp::Ordering;
+
+#[derive(Eq, PartialEq, Clone)]
 enum Node {
     VALUE(usize),
     LIST(Vec<Node>),
@@ -30,29 +33,29 @@ fn parse_2(packet: &str) -> Node {
     Node::LIST(vecs.pop().unwrap())
 }
 
-fn compare_node_vecs(lhs: &[Node], rhs: &[Node]) -> bool {
+fn compare_node_vecs(lhs: &[Node], rhs: &[Node]) -> Ordering {
     let left_first = lhs.first();
     let right_first = rhs.first();
 
     if left_first.is_none() {
-        return true;
+        return Ordering::Less;
     }
 
     if right_first.is_none() {
-        return false;
+        return Ordering::Greater;
     }
 
     let lhs_node = left_first.unwrap();
     let rhs_node = right_first.unwrap();
 
-    return match lhs_node {
+    match lhs_node {
         Node::VALUE(lhs_int) => {
-            return match rhs_node {
+            match rhs_node {
                 Node::VALUE(rhs_int) => {
                     if lhs_int == rhs_int {
                         return compare_node_vecs(&lhs[1..], &rhs[1..]);
                     } else {
-                        return lhs_int < rhs_int;
+                        return lhs_int.cmp(rhs_int);
                     }
                 }
                 Node::LIST(rhs_list) => {
@@ -62,7 +65,7 @@ fn compare_node_vecs(lhs: &[Node], rhs: &[Node]) -> bool {
             };
         }
         Node::LIST(lhs_list) => {
-            return match rhs_node {
+            match rhs_node {
                 Node::VALUE(rhs_int) => {
                     let rhs_list = vec![Node::VALUE(*rhs_int)];
                     return compare_node_vecs(lhs_list, &rhs_list);
@@ -79,7 +82,9 @@ fn are_in_the_right_order(lhs: &str, rhs: &str) -> bool {
     let lhs_parse = parse_2(lhs);
     let rhs_parse = parse_2(rhs);
 
-    return compare_node_vecs(&vec![lhs_parse], &vec![rhs_parse]);
+    // let order = compare_node_vecs(&vec![lhs_parse], &vec![rhs_parse]);
+    let order = compare(&lhs_parse, &rhs_parse);
+    return order != Ordering::Greater;
 }
 
 fn puzzle1(input_array: &[&str]) -> usize {
@@ -112,13 +117,72 @@ fn puzzle1(input_array: &[&str]) -> usize {
     return vec.iter().sum();
 }
 
+fn compare(first: &Node, second: &Node) -> Ordering {
+    match (first, second) {
+        (Node::VALUE(f_val), Node::VALUE(s_val)) => (*f_val).cmp(s_val),
+        (Node::LIST(f_list), Node::LIST(s_list)) => {
+            let mut i = 0;
+            while i < f_list.len() && i < s_list.len() {
+                match compare(&f_list[i], &s_list[i]) {
+                    Ordering::Equal => {}
+                    other => return other,
+                };
+                i += 1;
+            }
+            f_list.len().cmp(&s_list.len())
+        }
+        (l, Node::VALUE(v)) => compare(l, &Node::LIST(vec![Node::VALUE(*v)])),
+        (Node::VALUE(v), l) => compare(&Node::LIST(vec![Node::VALUE(*v)]), l),
+    }
+}
+
+
+// fn solve(data: &str) {
+//     let mut nodes = data
+//         .split('\n')
+//         .filter(|l| !l.is_empty())
+//         .map(|l| parse_2(l))
+//         .collect::<Vec<_>>();
+//     nodes.append(&mut vec![parse_2("[[2]]"), parse_2("[[6]]")]);
+//     nodes.sort_by(|x, y| compare(x, y));
+//     let divider_nodes = vec![parse_2("[[2]]"), parse_2("[[6]]")];
+//     let decoder_key = (0..nodes.len())
+//         .filter(|&i| divider_nodes.contains(&nodes[i]))
+//         .map(|i| i + 1)
+//         .product::<usize>();
+//     println!("decoder_key: {}", decoder_key);
+// }
+
 fn puzzle2(input_array: &[&str]) -> usize {
-    return 0;
+    let mut vec_nodes = Vec::<Node>::new();
+
+    let node1 = parse_2("[[2]]");
+    vec_nodes.push(node1.clone());
+    let node2 = parse_2("[[6]]");
+    vec_nodes.push(node2.clone());
+
+    for input in input_array {
+        if !input.trim().is_empty() {
+            let node = parse_2(*input);
+
+            vec_nodes.push(node);
+        }
+    }
+
+    vec_nodes.sort_by(compare);
+
+    let index1 = vec_nodes.iter().position(|r| r == &node1).unwrap() + 1;
+    let index2 = vec_nodes.iter().position(|r| r == &node2).unwrap() + 1;
+
+    println!("2={}, 6={}", index1, index2);
+
+    return index1 * index2;
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::day13::{puzzle1, puzzle2};
+    use std::cmp::Ordering;
+    use crate::day13::{compare_node_vecs, parse_2, puzzle1, puzzle2};
     use crate::utils::read_file_strings;
 
     const TEST_DATA: [&str; 23] = [
@@ -160,19 +224,29 @@ mod tests {
             .for_each(|string| data.push(string.as_str().trim()));
 
         let return_value = puzzle1(&data);
-        assert_eq!(return_value, 102399);
+        assert_eq!(return_value, 6072);
+    }
+
+    #[test]
+    fn test_thing() {
+        let lhs = "[[3],[],[],[9,6,[0,8,[2,2,4,8],0,[5,2,7,4,8]]],[[5],[[],0,[6,0],9,7],2]]";
+        let rhs = "[[3]]";
+
+        let lhs_node = parse_2(lhs);
+        let rhs_node = parse_2(rhs);
+
+        let comp = compare_node_vecs(&[lhs_node], &[rhs_node]);
+        assert_eq!(comp, Ordering::Greater);
     }
 
 
     #[test]
-    #[ignore]
     fn test_puzzle2() {
         let return_value = puzzle2(&TEST_DATA);
-        assert_eq!(return_value, 2713310158);
+        assert_eq!(return_value, 140);
     }
 
     #[test]
-    #[ignore]
     fn test_puzzle2_realdata() {
         let mut data = Vec::new();
         let vec = read_file_strings("../data/Day13.txt");
@@ -180,6 +254,6 @@ mod tests {
             .for_each(|string| data.push(string.as_str().trim()));
 
         let return_value = puzzle2(&data);
-        assert_eq!(return_value, 23641658401);
+        assert_eq!(return_value, 22184);
     }
 }

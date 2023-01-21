@@ -1,7 +1,6 @@
 use std::cmp::max;
 use lazy_static::lazy_static;
 use regex::Regex;
-use crate::utils::divide_round_up;
 
 lazy_static! {
     static ref REGEX: Regex = Regex::new(r"^Blueprint (\d+): Each ore robot costs (\d+) ore. Each clay robot costs (\d+) ore. Each obsidian robot costs (\d+) ore and (\d+) clay. Each geode robot costs (\d+) ore and (\d+) obsidian.$").unwrap();
@@ -234,6 +233,6 @@ mod tests {
             .for_each(|string| data.push(string.as_str().trim()));
 
         let return_value = puzzle2(&data[..3]);
-        assert_eq!(return_value, 23641658401);
+        assert_eq!(return_value, 15510);
     }
 }

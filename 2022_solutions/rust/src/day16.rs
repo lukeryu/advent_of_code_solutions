@@ -1,6 +1,5 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use crate::cartesian::{Grid, Point};
 
 lazy_static! {
     static ref REGEX: Regex = Regex::new(r"^Valve ([A-Z]{2}) has flow rate=(\d+); tunnels lead to valves ([A-Z]{2})(?:, ([A-Z]{2}))+$").unwrap();
