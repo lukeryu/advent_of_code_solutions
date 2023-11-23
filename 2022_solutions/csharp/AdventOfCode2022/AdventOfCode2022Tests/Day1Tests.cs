@@ -1,5 +1,4 @@
-using AdventOfCode2022;
-using System.IO;
+using static AdventOfCode2022.Day1;
 
 namespace AdventOfCode2022Tests;
 
@@ -26,48 +25,21 @@ public class Day1Tests
         return testData;
     }
 
-    private static List<string> GetDataFromFile()
-    {
-        var testData = new List<string>();
-
-        String line;
-        StreamReader sr = null;
-        try
-        {
-            sr = new StreamReader("../../../../../../data/Day1.txt");
-            
-            line = sr.ReadLine();
-
-            while (line != null)
-            {
-                testData.Add(line);
-                line = sr.ReadLine();
-            }
-        }
-        finally
-        {
-            sr?.Close();
-        }
-
-
-        return testData;
-    }
-
     [Test]
     public void Test1()
     {
         var testData = GetTestData();
 
-        var result = Day1.Puzzle1(testData);
+        var result = Puzzle1(testData);
         Assert.AreEqual(24000, result);
     }
 
     [Test]
     public void Test1_Data()
     {
-        var testData = GetDataFromFile();
+        var testData = TestUtils.GetDataFromFile("Day1.txt");
 
-        var result = Day1.Puzzle1(testData);
+        var result = Puzzle1(testData);
         Assert.AreEqual(71780, result);
     }
 
@@ -76,16 +48,16 @@ public class Day1Tests
     {
         var testData = GetTestData();
 
-        var result = Day1.Puzzle2(testData);
+        var result = Puzzle2(testData);
         Assert.AreEqual(45000, result);
     }
 
     [Test]
     public void Test2_Data()
     {
-        var testData = GetDataFromFile();
+        var testData = TestUtils.GetDataFromFile("Day1.txt");
 
-        var result = Day1.Puzzle2(testData);
+        var result = Puzzle2(testData);
         Assert.AreEqual(212489, result);
     }
 }
