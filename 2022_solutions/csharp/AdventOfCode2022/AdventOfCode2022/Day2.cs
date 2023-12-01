@@ -70,7 +70,7 @@ public class Day2
         return null;
     }
 
-    private static RPSRecord GetStategicRps(RPSRecord opponentRps, string codeString)
+    private static RPSRecord GetStrategicRps(RPSRecord opponentRps, string codeString)
     {
         if (codeString == "X")
         {
@@ -144,7 +144,7 @@ public class Day2
             var oppString = strings[0];
             var myString = strings[1];
             var opponentRps = GetRps(oppString);
-            var myRps = GetStategicRps(opponentRps, myString);
+            var myRps = GetStrategicRps(opponentRps, myString);
             sum += myRps.score;
             if (myRps.WinAgainst == opponentRps.rps)
             {

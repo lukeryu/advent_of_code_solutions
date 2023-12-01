@@ -377,6 +377,16 @@
             "related": ".xml"
           }
         }
+      },
+      "AdventOfCode2023/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/AdventOfCode2023.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AdventOfCode2023.dll": {}
+        }
       }
     }
   },
@@ -969,10 +979,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "AdventOfCode2023/1.0.0": {
+      "type": "project",
+      "path": "../AdventOfCode2023/AdventOfCode2023.csproj",
+      "msbuildProject": "../AdventOfCode2023/AdventOfCode2023.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "AdventOfCode2023 >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 17.7.1",
       "NUnit >= 3.13.3",
       "NUnit.Analyzers >= 3.6.1",
@@ -1004,7 +1020,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\luker\\dev\\advent_of_code_solutions\\2023_solutions\\csharp\\AdventOfCode2023\\AdventOfCode2023.csproj": {
+              "projectPath": "C:\\Users\\luker\\dev\\advent_of_code_solutions\\2023_solutions\\csharp\\AdventOfCode2023\\AdventOfCode2023.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

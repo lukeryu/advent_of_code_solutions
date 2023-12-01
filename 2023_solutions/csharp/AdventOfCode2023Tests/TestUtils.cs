@@ -7,7 +7,7 @@ public class TestUtils
         var testData = new List<string>();
 
         string? line;
-        StreamReader sr;
+        StreamReader? sr = null;
         try
         {
             sr = new StreamReader("../../../../../data/" + filename);
@@ -23,9 +23,7 @@ public class TestUtils
         finally
         {
             sr?.Close();
-        }
-
-
+        } 
         return testData;
     }
 }

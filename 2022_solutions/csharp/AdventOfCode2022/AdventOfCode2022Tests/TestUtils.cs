@@ -6,12 +6,9 @@ public class TestUtils
     {
         var testData = new List<string>();
 
-        String line;
-        StreamReader sr = null;
-        try
+        string? line;
+        using (StreamReader sr = new StreamReader("../../../../../../data/" + filename))
         {
-            sr = new StreamReader("../../../../../../data/" + filename);
-            
             line = sr.ReadLine();
 
             while (line != null)
@@ -20,11 +17,6 @@ public class TestUtils
                 line = sr.ReadLine();
             }
         }
-        finally
-        {
-            sr?.Close();
-        }
-
 
         return testData;
     }
