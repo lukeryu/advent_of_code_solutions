@@ -14,7 +14,7 @@ public static partial class Day1
             char? firstDigit = null;
             char? lastDigit = null;
 
-            foreach (var character in data.Where(character => char.IsDigit(character)))
+            foreach (var character in data.Where(char.IsDigit))
             {
                 firstDigit ??= character;
                 lastDigit = character;
@@ -22,7 +22,7 @@ public static partial class Day1
 
             var firstValue = firstDigit - '0';
             var lastValue = lastDigit - '0';
-            if (firstValue != null && lastValue != null)
+            if (firstValue.HasValue && lastValue.HasValue)
             {
                 var rowValue = (ulong)(firstValue.Value * 10) + (ulong)lastValue.Value;
                 sum += rowValue;
@@ -32,7 +32,7 @@ public static partial class Day1
         return sum;
     }
 
-    public static ulong Puzzle2(List<string> input)
+    public static ulong Puzzle2(IEnumerable<string> input)
     {
         var transformedStrings = input.Select(TransformWordsToNumbers).ToList();
 
