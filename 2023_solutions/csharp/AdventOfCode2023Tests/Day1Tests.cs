@@ -2,7 +2,7 @@ using AdventOfCode2023;
 
 namespace AdventOfCode2023Tests;
 
-public class Tests
+public class Day1Tests
 {
     private static List<string> GetTestData()
     {
