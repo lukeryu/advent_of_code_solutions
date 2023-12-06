@@ -2,7 +2,7 @@
 
 namespace AdventOfCode2023Tests;
 
-public class Day4Test
+public class Day4Tests
 {
     private static List<string> GetTestData()
     {
