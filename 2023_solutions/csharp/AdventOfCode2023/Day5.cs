@@ -1,4 +1,7 @@
-﻿namespace AdventOfCode2023;
+﻿using System.ComponentModel.DataAnnotations;
+using OpenCL.Net;
+
+namespace AdventOfCode2023;
 
 public static class Day5
 {
@@ -110,18 +113,18 @@ public static class Day5
                 var hasBeenMapped = false;
                 foreach (var mapperValue in _mapperValuesList)
                 {
-                    var intersects = mapperValue.Intersects(tuple);
-                    if (intersects.IntersectingTuple == null)
+                    var intersectionResults = mapperValue.Intersects(tuple);
+                    if (intersectionResults.IntersectingTuple == null)
                     {
                         continue;
                     }
 
                     returnValues.Add(new Tuple<ulong, ulong>(
-                        mapperValue.TryMap(intersects.IntersectingTuple.Item1),
-                        mapperValue.TryMap(intersects.IntersectingTuple.Item2))
+                        mapperValue.TryMap(intersectionResults.IntersectingTuple.Item1),
+                        mapperValue.TryMap(intersectionResults.IntersectingTuple.Item2))
                     );
 
-                    returnValues.AddRange(Map(intersects.OutsideTuples));
+                    returnValues.AddRange(Map(intersectionResults.OutsideTuples));
                     hasBeenMapped = true;
                 }
 
@@ -247,16 +250,63 @@ public static class Day5
         var humidRanges = problem.TemperatureToHumidityMap.Map(tempRanges);
         var locationRanges = problem.HumidityToLocationMap.Map(humidRanges);
 
-        var max = ulong.MaxValue;
-        foreach (var loc in locationRanges)
-        {
-            if (loc.Item1 < max)
-            {
-                max = loc.Item1;
-            }
-            
-        }
-
-        return max;
+        return locationRanges.Select(tuple => tuple.Item1).Min();
     }
+    
+    // public static ulong Puzzle1OpenCL(List<string> inputLines)
+    // {
+    //     var problem = ParseProblem(inputLines);
+    //     var data = problem.Seeds.ToArray();
+    //     var size = problem.Seeds.Count;
+    //
+    //     Device[] device = new Device[1];
+    //     Cl.GetDeviceIDs(null, DeviceType.Gpu, 1,device, null);
+    //     var context = Cl.CreateContext(null, 1, device, null, null, null);
+    //     var queue = Cl.CreateCommandQueue(context, device[0], CommandQueueProperties.None, null);
+    //
+    //     string[] source = {
+    //         ""
+    //     };
+    //     var program = Cl.CreateProgramWithSource(context, 1, source, null, null);
+    //     Cl.BuildProgram(program, 0, null, null, null, null);
+    //     var kernel = Cl.CreateKernel(program, "maps", null);
+    //     var buffer = Cl.CreateBuffer<ulong>(context, MemFlags.ReadWrite, size, null);
+    //
+    //     Cl.EnqueueWriteBuffer(queue, buffer, Bool.False, 0, size, data, 0, null, null);
+    //     Cl.SetKernelArg<ulong>(kernel, 0, buffer);
+    //     IntPtr[] globalDimensions = {LENGTH, 0, 0};
+    //     Cl.EnqueueNDRangeKernel(queue, kernel, 1, null, globalDimensions, null, 0, null, null);
+    //     
+    //     Event evnt;
+    //     Cl.EnqueueReadBuffer(queue, buffer, Bool.False, 0, 0, data, 0, null, out evnt);
+    //
+    //     Cl.Finish(queue);
+    //
+    //     var max = ulong.MaxValue;
+    //     
+    //     var seedList = problem.Seeds;
+    //     var seedRanges = new List<Tuple<ulong, ulong>>();
+    //     for (var i = 0; i < seedList.Count; i += 2)
+    //     {
+    //         seedRanges.Add(new Tuple<ulong, ulong>(seedList[i], seedList[i] + seedList[i + 1] - 1));
+    //     }
+    //
+    //     foreach (var seed in problem.Seeds)
+    //     {
+    //         var soil = problem.SeedToSoilMap.Map(seed);
+    //         var fertilizer = problem.SoilToFertilizerMap.Map(soil);
+    //         var water = problem.FertilizerToWaterMap.Map(fertilizer);
+    //         var light = problem.WaterToLightMap.Map(water);
+    //         var temp = problem.LightToTemperatureMap.Map(light);
+    //         var humid = problem.TemperatureToHumidityMap.Map(temp);
+    //         var location = problem.HumidityToLocationMap.Map(humid);
+    //
+    //         if (location < max)
+    //         {
+    //             max = location;
+    //         }
+    //     }
+    //
+    //     return max;
+    // }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Tm3WXrKYcOZ3zqIWjGXd4fcTuvny4KiWuy9WzJSCSF722AbO1jFzPIt2RzUiWfMQ9bk/puhANJd1w5cLmmiKBw==",
+  "dgSpecHash": "z4iJ2wfkkRDuLPX3mUunFgZa3IngZvFghVJr2IwqCLKU9hiNG5Cu89aTwggj7GYR2BhwVe5MA273dmy/JVvJSA==",
   "success": true,
   "projectFilePath": "C:\\Users\\luker\\dev\\advent_of_code_solutions\\2023_solutions\\csharp\\AdventOfCode2023Tests\\AdventOfCode2023Tests.csproj",
   "expectedPackageFiles": [
@@ -16,7 +16,19 @@
     "C:\\Users\\luker\\.nuget\\packages\\nunit\\3.13.3\\nunit.3.13.3.nupkg.sha512",
     "C:\\Users\\luker\\.nuget\\packages\\nunit.analyzers\\3.6.1\\nunit.analyzers.3.6.1.nupkg.sha512",
     "C:\\Users\\luker\\.nuget\\packages\\nunit3testadapter\\4.4.2\\nunit3testadapter.4.4.2.nupkg.sha512",
+    "C:\\Users\\luker\\.nuget\\packages\\opencl.net\\2.2.9\\opencl.net.2.2.9.nupkg.sha512",
     "C:\\Users\\luker\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'OpenCL.Net 2.2.9' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "OpenCL.Net",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }

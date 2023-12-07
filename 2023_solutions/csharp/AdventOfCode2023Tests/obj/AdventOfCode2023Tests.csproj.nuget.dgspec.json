@@ -116,6 +116,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "OpenCL.Net": {
+              "target": "Package",
+              "version": "[2.2.9, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

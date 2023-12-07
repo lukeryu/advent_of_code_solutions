@@ -365,6 +365,18 @@
           "build/netcoreapp3.1/NUnit3TestAdapter.props": {}
         }
       },
+      "OpenCL.Net/2.2.9": {
+        "type": "package",
+        "compile": {
+          "lib/net40/OpenCL.Net.dll": {}
+        },
+        "runtime": {
+          "lib/net40/OpenCL.Net.dll": {}
+        },
+        "build": {
+          "build/net40/_._": {}
+        }
+      },
       "System.Reflection.Metadata/1.6.0": {
         "type": "package",
         "compile": {
@@ -381,6 +393,9 @@
       "AdventOfCode2023/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "OpenCL.Net": "2.2.9"
+        },
         "compile": {
           "bin/placeholder/AdventOfCode2023.dll": {}
         },
@@ -959,6 +974,19 @@
         "nunit_256.png"
       ]
     },
+    "OpenCL.Net/2.2.9": {
+      "sha512": "88xksmTwopVt7UN8Kdpry3sIKcEM5sbvIKJYYwj8MGOvnpqS50N9HaKBD/oXae/1pKyuj2/Ipo1eid7yQ18B1Q==",
+      "type": "package",
+      "path": "opencl.net/2.2.9",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/net40/OpenCL.Net.targets",
+        "lib/net40/OpenCL.Net.dll",
+        "opencl.net.2.2.9.nupkg.sha512",
+        "opencl.net.nuspec"
+      ]
+    },
     "System.Reflection.Metadata/1.6.0": {
       "sha512": "COC1aiAJjCoA5GBF+QKL2uLqEBew4JsCkQmoHKbN3TlOZKa2fKLz5CpiRQKDz0RsAOEGsVKqOD5bomsXq/4STQ==",
       "type": "package",
@@ -1077,5 +1105,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'OpenCL.Net 2.2.9' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "OpenCL.Net",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }
