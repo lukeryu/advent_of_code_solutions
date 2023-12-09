@@ -71,7 +71,22 @@ public class Day5Tests
     {
         var data = TestUtils.GetDataFromFile("Day5.txt");
         var result = Day5.Puzzle2(data);
-        Assert.That(result, Is.EqualTo(1));
+        Assert.That(result, Is.EqualTo(104070862)); // 104070863 too high
+    }
+    
+    [Test]
+    public void Puzzle2TestAsdf()
+    {
+        var result = Day5.Puzzle2RunItAll(GetTestData());
+        Assert.That(result, Is.EqualTo(46));
+    }
+    
+    [Test]
+    public void Puzzle2RealData2()
+    {
+        var data = TestUtils.GetDataFromFile("Day5.txt");
+        var result = Day5.DoWork(data);
+        Assert.That(result, Is.EqualTo(104070862)); // 104070863 too high
     }
     
     [Test]
@@ -113,5 +128,25 @@ public class Day5Tests
             new(21, 25)
         }));
         
+    }
+
+    [Test]
+    public void TestMapReverse()
+    {
+        var data = TestUtils.GetDataFromFile("Day5.txt");
+        data[0] = "seed: 104070862";
+
+        var result = Day5.Puzzle1Reverse(data);
+        Assert.That(result, Is.EqualTo(2956313548));
+    } 
+    
+    [Test]
+    public void TestMap()
+    {
+        var data = TestUtils.GetDataFromFile("Day5.txt");
+        data[0] = "seed: 2956313548";
+
+        var result = Day5.Puzzle1(data);
+        Assert.That(result, Is.EqualTo(104070862));
     }
 }

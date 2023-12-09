@@ -22,7 +22,7 @@ public static class Day5
     {
         public ulong TryMap(ulong from)
         {
-            if (from <= SourceStart)
+            if (from < SourceStart)
             {
                 return 0;
             }
@@ -38,18 +38,38 @@ public static class Day5
 
             return DestinationStart + difference;
         }
+        
+        public ulong TryReverseMap(ulong from)
+        {
+            if (from < DestinationStart)
+            {
+                return 0;
+            }
+
+            var destEnd = DestinationStart + Range;
+
+            if (from > destEnd)
+            {
+                return 0;
+            }
+
+            var difference = from - DestinationStart;
+
+            return SourceStart + difference;
+        }
 
         public IntersectionResults Intersects(Tuple<ulong, ulong> tuple)
         {
             var sourceEnd = (SourceStart + Range);
-            if (tuple.Item2 < SourceStart || tuple.Item1 > sourceEnd)
+            if ((tuple.Item2 < SourceStart && tuple.Item1 < SourceStart) || (tuple.Item1 > sourceEnd && tuple.Item2 > sourceEnd))
             {
                 return new IntersectionResults(null, new List<Tuple<ulong, ulong>>()); //No Intersection   
             }
 
             if (tuple.Item1 >= SourceStart && tuple.Item2 <= sourceEnd)
             {
-                return new IntersectionResults(tuple, new List<Tuple<ulong, ulong>>()); //Full Intersection, no outside   
+                return new IntersectionResults(tuple,
+                    new List<Tuple<ulong, ulong>>()); //Full Intersection, no outside   
             }
 
 
@@ -104,6 +124,20 @@ public static class Day5
 
             return from;
         }
+        
+        public ulong ReverseMap(ulong from)
+        {
+            foreach (var mapperValue in _mapperValuesList)
+            {
+                var to = mapperValue.TryReverseMap(from);
+                if (to > 0)
+                {
+                    return to;
+                }
+            }
+
+            return from;
+        }
 
         public List<Tuple<ulong, ulong>> Map(List<Tuple<ulong, ulong>> from)
         {
@@ -113,19 +147,22 @@ public static class Day5
                 var hasBeenMapped = false;
                 foreach (var mapperValue in _mapperValuesList)
                 {
-                    var intersectionResults = mapperValue.Intersects(tuple);
-                    if (intersectionResults.IntersectingTuple == null)
+                    if (!hasBeenMapped)
                     {
-                        continue;
+                        var intersectionResults = mapperValue.Intersects(tuple);
+                        if (intersectionResults.IntersectingTuple == null)
+                        {
+                            continue;
+                        }
+
+                        returnValues.Add(new Tuple<ulong, ulong>(
+                            mapperValue.TryMap(intersectionResults.IntersectingTuple.Item1),
+                            mapperValue.TryMap(intersectionResults.IntersectingTuple.Item2))
+                        );
+
+                        returnValues.AddRange(Map(intersectionResults.OutsideTuples));
+                        hasBeenMapped = true;
                     }
-
-                    returnValues.Add(new Tuple<ulong, ulong>(
-                        mapperValue.TryMap(intersectionResults.IntersectingTuple.Item1),
-                        mapperValue.TryMap(intersectionResults.IntersectingTuple.Item2))
-                    );
-
-                    returnValues.AddRange(Map(intersectionResults.OutsideTuples));
-                    hasBeenMapped = true;
                 }
 
                 if (!hasBeenMapped)
@@ -133,6 +170,8 @@ public static class Day5
                     returnValues.Add(tuple);
                 }
             }
+            
+            returnValues.Sort((lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
 
             return returnValues;
         }
@@ -200,10 +239,35 @@ public static class Day5
             var temp = problem.LightToTemperatureMap.Map(light);
             var humid = problem.TemperatureToHumidityMap.Map(temp);
             var location = problem.HumidityToLocationMap.Map(humid);
-
+            
             if (location < max)
             {
                 max = location;
+            }
+        }
+
+        return max;
+    }
+    
+    public static ulong Puzzle1Reverse(List<string> inputLines)
+    {
+        var problem = ParseProblem(inputLines);
+
+        var max = ulong.MaxValue;
+
+        foreach (var location in problem.Seeds)
+        {
+            var humid = problem.HumidityToLocationMap.ReverseMap(location);
+            var temp = problem.TemperatureToHumidityMap.ReverseMap(humid);
+            var light = problem.LightToTemperatureMap.ReverseMap(temp);
+            var water = problem.WaterToLightMap.ReverseMap(light);
+            var fertilizer = problem.FertilizerToWaterMap.ReverseMap(water);
+            var soil = problem.SoilToFertilizerMap.ReverseMap(fertilizer);
+            var seed = problem.SeedToSoilMap.ReverseMap(soil);
+            
+            if (seed < max)
+            {
+                max = seed;
             }
         }
 
@@ -239,7 +303,15 @@ public static class Day5
         var seedRanges = new List<Tuple<ulong, ulong>>();
         for (var i = 0; i < seedList.Count; i += 2)
         {
-            seedRanges.Add(new Tuple<ulong, ulong>(seedList[i], seedList[i] + seedList[i + 1] - 1));
+            seedRanges.Add(new(seedList[i], seedList[i] + seedList[i + 1] - 1));
+        }
+
+        foreach (var range in seedRanges)
+        {
+            if (range.Item1 <= 2956313548 && range.Item2 >= 2956313548)
+            {
+                Console.Out.WriteLine(range.Item1);
+            }
         }
 
         var soilRanges = problem.SeedToSoilMap.Map(seedRanges);
@@ -252,7 +324,153 @@ public static class Day5
 
         return locationRanges.Select(tuple => tuple.Item1).Min();
     }
-    
+
+    public static ulong Puzzle2RunItAll(List<string> inputLines)
+    {
+        var problem = ParseProblem(inputLines);
+
+        var seedList = problem.Seeds;
+        var seedRanges = new List<Tuple<ulong, ulong>>();
+        for (var i = 0; i < seedList.Count; i += 2)
+        {
+            seedRanges.Add(new Tuple<ulong, ulong>(seedList[i], seedList[i] + seedList[i + 1] - 1));
+        }
+
+        
+        var max = ulong.MaxValue;
+
+        foreach (var seedRange in seedRanges)
+        {
+            for (var seed = seedRange.Item1; seed <= seedRange.Item2; seed++)
+            {
+                var soil = problem.SeedToSoilMap.Map(seed);
+                var fertilizer = problem.SoilToFertilizerMap.Map(soil);
+                var water = problem.FertilizerToWaterMap.Map(fertilizer);
+                var light = problem.WaterToLightMap.Map(water);
+                var temp = problem.LightToTemperatureMap.Map(light);
+                var humid = problem.TemperatureToHumidityMap.Map(temp);
+                var location = problem.HumidityToLocationMap.Map(humid);
+
+                if (location < max)
+                {
+                    max = location;
+                }
+            }
+        }
+
+        return max;
+    }
+
+    //From https://github.com/andrewscodedump/Advent/blob/master/2023/Done/Days01-05/Day05.cs
+    public static long DoWork(List<string> Inputs)
+    {
+        char[] spaceOrHyphen = {' ', '-'};
+        Dictionary<string, string> mappingTypes = new();
+        List<(string sourceType, long sourceFrom, long sourceTo, long destOffset)> mappings = new();
+        long lowestDest = long.MaxValue;
+        string type = "", destType = "";
+        long[] seeds = Array.ConvertAll(Inputs[0].Split(' ')[1..], long.Parse);
+
+        foreach (string line in Inputs.Skip(2))
+        {
+            if (line == "") continue;
+            if (line.Contains('-'))
+            {
+                string[] words = line.Split(spaceOrHyphen, StringSplitOptions.RemoveEmptyEntries);
+                type = words[0]; destType = words[2];
+                mappingTypes[type] = destType;
+            }
+            else
+            {
+                long[] numbers = Array.ConvertAll(line.Split(' '), long.Parse);
+                mappings.Add((type, numbers[1], numbers[1] + numbers[2] - 1, numbers[0] - numbers[1]));
+            }
+        }
+
+        if (false)
+        {
+            foreach (long seedNumber in seeds)
+            {
+                type = "seed";
+                long sourceNumber = seedNumber;
+                do
+                {
+                    (string sourceType, long sourceFrom, long sourceTo, long destOffset)
+                        = mappings.LastOrDefault(m => m.sourceType == type && m.sourceFrom <= sourceNumber && sourceNumber <= m.sourceTo, ("", 0, 0, 0));
+                    sourceNumber += destOffset;
+                    type = mappingTypes[type];
+                } while (type != "location");
+                lowestDest = Math.Min(lowestDest, sourceNumber);
+            }
+        }
+        else
+        {
+            List<(long from, long to)> ranges = new();
+            for (int i = 0; i < seeds.Length; i += 2)
+            {
+                ranges.Add((seeds[i], seeds[i] + seeds[i + 1] - 1));
+            }
+            type = "seed";
+            do
+            {
+                var filteredMappings = mappings.Where(m => m.sourceType == type).OrderBy(m => m.sourceFrom);
+                ranges = GetDestRanges(ranges.OrderBy(r => r.from).ToList(), new List<(string sourceType, long sourceFrom, long sourceTo, long destOffset)>(filteredMappings));
+                type = mappingTypes[type];
+            } while (type != "location");
+            lowestDest = Math.Min(lowestDest, ranges.Min(r => r.from));
+        }
+        return lowestDest;
+    }
+
+    static List<(long, long)> GetDestRanges(List<(long, long)> sourceRanges, List<(string sourceType, long sourceFrom, long sourceTo, long destOffset)> mappings)
+    {
+        List<(long, long)> result = new();
+        foreach ((long , long) sourceRange in sourceRanges)
+        {
+            (long from, long to) testRange = sourceRange;
+            bool allDone = false;
+            do
+            {
+                // Find the last mapping where the start is less than the start of the range
+                (string sourceType, long sourceFrom, long sourceTo, long destOffset)
+                    = mappings.LastOrDefault(m => m.sourceFrom <= testRange.from && testRange.from <= m.sourceTo, ("", 0, 0, 0));
+                // There aren't any
+                if (sourceType == "")
+                {
+                    // Does the end fit in any mappings?
+                    (sourceType, sourceFrom, sourceTo, destOffset)
+                        = mappings.LastOrDefault(m => m.sourceFrom <= testRange.to && testRange.to <= m.sourceTo, ("", 0, 0, 0));
+                    if (sourceType == "")
+                    {
+                        // If there aren't any, add the whole range and end
+                        result.Add(testRange);
+                        allDone = true;
+                    }
+                    else
+                    {
+                        // Add the start of the range, set the range to the end and continue
+                        result.Add((testRange.from, sourceFrom - 1));
+                        testRange = (sourceFrom, testRange.to);
+                    }
+                }
+                // If the end of the mapping is greater than the end of the range, add the whole range (with offset) and end
+                else if (sourceTo >= testRange.to)
+                {
+                    result.Add((testRange.from + destOffset, testRange.to + destOffset));
+                    allDone = true;
+                }
+                // Otherwise, add from the start of the range to the end of the mapping (with offsets), set the range start to the mapping end plus one and continue
+                else
+                {
+                    //sourceNumber = sourceNumber + destFrom - sourceFrom;
+                    result.Add((testRange.from + destOffset, sourceTo + destOffset));
+                    testRange = (sourceTo + 1, testRange.to);
+                }
+            } while (!allDone);
+        }
+        return result;
+    }
+
     // public static ulong Puzzle1OpenCL(List<string> inputLines)
     // {
     //     var problem = ParseProblem(inputLines);
