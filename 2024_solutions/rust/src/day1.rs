@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 fn parse_lists(input_array: &[&str]) -> (Vec<i32>, Vec<i32>) {
-    let mut lhs = Vec::<i32>::new();
-    let mut rhs = Vec::<i32>::new();
+    let mut lhs = Vec::<i32>::with_capacity(input_array.len());
+    let mut rhs = Vec::<i32>::with_capacity(input_array.len());
 
     for line in input_array {
         if line.is_empty() {
@@ -47,7 +47,10 @@ fn puzzle2(input_array: &[&str]) -> i64 {
     let mut rhs_map = HashMap::<i32, i64>::new();
 
     for rhs_value in rhs {
-        rhs_map.entry(rhs_value).and_modify(|v| *v += 1).or_insert(1);
+        rhs_map
+            .entry(rhs_value)
+            .and_modify(|v| *v += 1)
+            .or_insert(1);
     }
 
     let mut product: i64 = 0;
@@ -68,11 +71,11 @@ mod tests {
     use crate::day1::puzzle2;
     use crate::utils::read_file_strings;
 
+    const EXAMPLE_INPUT: [&str; 6] = ["3   4", "4   3", "2   5", "1   3", "3   9", "3   3"];
+
     #[test]
     fn test_puzzle1() {
-        let values = &["3   4", "4   3", "2   5", "1   3", "3   9", "3   3"];
-
-        let return_value = puzzle1(values);
+        let return_value = puzzle1(&EXAMPLE_INPUT);
         assert_eq!(return_value, 11);
     }
 
@@ -88,9 +91,7 @@ mod tests {
 
     #[test]
     fn test_puzzle2() {
-        let values = &["3   4", "4   3", "2   5", "1   3", "3   9", "3   3"];
-
-        let return_value = puzzle2(values);
+        let return_value = puzzle2(&EXAMPLE_INPUT);
         assert_eq!(return_value, 31);
     }
 
