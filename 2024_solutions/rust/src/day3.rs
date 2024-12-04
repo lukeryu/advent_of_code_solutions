@@ -82,7 +82,7 @@ mod tests {
         vec.iter().for_each(|string| data.push(string.as_str()));
 
         let return_value = puzzle1(&data[..]);
-        assert_eq!(return_value, 180233229); // 625 too high
+        assert_eq!(return_value, 180233229);
     }
 
     #[test]
