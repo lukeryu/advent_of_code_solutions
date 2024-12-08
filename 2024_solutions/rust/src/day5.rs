@@ -1,8 +1,4 @@
-﻿struct OrderInstruction {
-    first: i64,
-    second: i64,
-}
-
+﻿
 fn parse_input(input_array: &[&str]) -> (Vec<Vec<i64>>, Vec<Vec<i64>>) {
     let mut instructions = Vec::new();
     let mut updates = Vec::new();
