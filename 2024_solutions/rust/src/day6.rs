@@ -126,14 +126,34 @@ fn puzzle2(input_array: &[&str]) -> usize {
 
     position_count.iter().for_each(|vector| {
         hash_map
-            .entry(vector.direction)
+            .entry(vector.position)
             .and_modify(|v| {
                 v.insert(vector.direction);
             })
             .or_insert(new_hashset(vector.direction));
     });
 
-    hash_map.values().filter(|set| set.len() > 1).count()
+    hash_map.values().filter(&has_right_turn).count()
+}
+
+fn has_right_turn(directions : &&HashSet<Position2d>) -> bool {
+    if directions.contains(&RIGHT) && directions.contains(&DOWN) {
+        return true;
+    }
+
+    if directions.contains(&LEFT) && directions.contains(&DOWN) {
+        return true;
+    }
+
+    if directions.contains(&RIGHT) && directions.contains(&UP) {
+        return true;
+    }
+
+    if directions.contains(&LEFT) && directions.contains(&UP) {
+        return true;
+    }
+
+    false
 }
 
 fn new_hashset(p0: Position2d) -> HashSet<Position2d> {

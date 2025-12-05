@@ -87,7 +87,7 @@ public static class Day13
 
     private static List<string> RotateGraphCounterClockwise(List<string> graph)
     {
-        List<StringBuilder> sbList = new List<StringBuilder>();
+        var sbList = new List<StringBuilder>();
 
         for (var i = 0; i < graph[0].Length; i++)
         {
